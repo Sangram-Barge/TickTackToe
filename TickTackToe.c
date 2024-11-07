@@ -10,6 +10,7 @@ void clear();
 void draw();
 int takeInput();
 void begin();
+void updateBoard();
 
 char board[3][3];
 int currentPlayer = PLAYER_1;
@@ -21,11 +22,9 @@ int main() {
     begin();
     for(;;) {
         draw();
-        while(takeInput() == FALSE){
+        while (!takeInput())
             fprintf(stderr, "invalid input please enter again\n");
-        }
-        board[(*boardInput) - 1][(*(boardInput + 1)) - 1] = currentPlayer == PLAYER_1 ? 'X' : 'O';
-        currentPlayer = currentPlayer == PLAYER_1 ? PLAYER_2 : PLAYER_1;
+        updateBoard();
     }
     return 0;
 }
@@ -35,24 +34,25 @@ void begin() {
     scanf("%s", player1);
     fprintf(stdout, "enter player 2 name : ");
     scanf("%s", player2);
-    for (int i = 0; i < 3; i++) 
+    for (int i = 0; i < 3; i++)
         for (int j = 0; j < 3; j++)
             board[i][j] = '-';
-    
 }
 
 int takeInput() {
     fprintf(stdout, "%s\n", currentPlayer == PLAYER_1 ? player1 : player2);
     fprintf(stdout, "enter row [1, 2, 3] : ");
     scanf("%d", boardInput);
-    if (*boardInput < 1 || *boardInput > 3) return FALSE;
+    if (*boardInput < 1 || *boardInput > 3)
+        return FALSE;
     fprintf(stdout, "enter column [1, 2, 3] : ");
     scanf("%d", boardInput + 1);
-    if (*boardInput+1 < 1 || *boardInput+1 > 3) return FALSE;
+    if (*(boardInput + 1) < 1 || *(boardInput + 1) > 3)
+        return FALSE;
     if (
-         board[(*boardInput) - 1][(*(boardInput + 1)) - 1] == 'X' ||
-         board[(*boardInput) - 1][(*(boardInput + 1)) - 1] == 'O'
-    ) return FALSE;
+        board[(*boardInput) - 1][(*(boardInput + 1)) - 1] == 'X' ||
+        board[(*boardInput) - 1][(*(boardInput + 1)) - 1] == 'O')
+        return FALSE;
     return TRUE;
 }
 
@@ -68,6 +68,11 @@ void draw() {
         }
         fprintf(stdout, "\n");
     }
+}
+
+void updateBoard() {
+    board[(*boardInput) - 1][(*(boardInput + 1)) - 1] = currentPlayer == PLAYER_1 ? 'X' : 'O';
+    currentPlayer = currentPlayer == PLAYER_1 ? PLAYER_2 : PLAYER_1;
 }
 
 void clear() {
