@@ -11,22 +11,47 @@ void draw();
 int takeInput();
 void begin();
 void updateBoard();
+void updatePlayer();
+int checkWin();
 
 char board[3][3];
+int winningBoard[3][3] = {
+    {4, 9, 2},
+    {3, 5, 7},
+    {8, 1, 6}
+};
 int currentPlayer = PLAYER_1;
 char player1[20];
 char player2[20];
 int boardInput[2];
+int moves = 0;
 
 int main() {
     begin();
+    draw();
     for(;;) {
-        draw();
         while (!takeInput())
             fprintf(stderr, "invalid input please enter again\n");
         updateBoard();
+        if(checkWin()) break;
+        updatePlayer();
     }
+    fprintf(stdout, "%s won!!! \n", currentPlayer == PLAYER_1 ? player1 : player2);
     return 0;
+}
+
+int checkWin() {
+    int winnigSum = 0;
+    int player = currentPlayer == PLAYER_1 ? 'X' : 'O';
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++)  {
+            if (board[i][j] == player) {
+                winnigSum += winningBoard[i][j];
+                if (winnigSum == 15) return TRUE;
+            }
+        }
+    }
+    return FALSE;
 }
 
 void begin() {
@@ -72,6 +97,10 @@ void draw() {
 
 void updateBoard() {
     board[(*boardInput) - 1][(*(boardInput + 1)) - 1] = currentPlayer == PLAYER_1 ? 'X' : 'O';
+    draw();
+}
+
+void updatePlayer() {
     currentPlayer = currentPlayer == PLAYER_1 ? PLAYER_2 : PLAYER_1;
 }
 
